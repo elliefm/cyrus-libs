@@ -71,6 +71,8 @@ update-libical: force-update-libical .libical.update
 libical: .libical.build
 
 clean-libical:
+	( cd $(LIBICAL_SRCDIR) && \
+	  git clean -xfd )
 	rm -fr $(LIBICAL_BUILDDIR) .libical.build
 
 .libical.update:
@@ -102,6 +104,8 @@ update-opendkim: force-update-opendkim .opendkim.update
 opendkim: .opendkim.build
 
 clean-opendkim:
+	( cd $(OPENDKIM_SRCDIR) && \
+	  git clean -xfd )
 	rm -fr $(OPENDKIM_BUILDDIR) .opendkim.build
 
 .opendkim.update:
