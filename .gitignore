@@ -1,6 +1,6 @@
-.*.build
-.*.update
-.*.install
+.*.built
+.*.updated
+.*.installed
 icu/
 icu-build/
 libical-build/

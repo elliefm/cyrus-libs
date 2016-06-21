@@ -18,9 +18,9 @@ all: build
 
 update: update-icu update-libical update-opendkim
 
-build: .icu.build .libical.build .opendkim.build
+build: .icu.built .libical.built .opendkim.built
 
-install: .icu.install .libical.install .opendkim.install
+install: .icu.installed .libical.installed .opendkim.installed
 
 clean: clean-icu clean-libical clean-opendkim
 
@@ -30,31 +30,31 @@ clean: clean-icu clean-libical clean-opendkim
 .PHONY: icu update-icu force-update-icu clean-icu
 
 force-update-icu:
-	rm -f .icu.update
+	rm -f .icu.updated
 
-update-icu: force-update-icu .icu.update
+update-icu: force-update-icu .icu.updated
 
-icu: .icu.build
+icu: .icu.built
 
 clean-icu:
-	rm -fr $(ICU_BUILDDIR) .icu.build
+	rm -fr $(ICU_BUILDDIR) .icu.built
 
 $(ICU_SRCDIR):
 	mkdir -p icu
 	(cd icu && svn co $(ICU_SVN_URL))
 
-.icu.update: | $(ICU_SRCDIR)
+.icu.updated: | $(ICU_SRCDIR)
 	(cd icu/$(ICU_RELEASE) && svn update)
 	touch $@
 
-.icu.build: .icu.update
+.icu.built: .icu.updated
 	( mkdir -p $(ICU_BUILDDIR) && \
 	  cd $(ICU_BUILDDIR) && \
 	  ../$(ICU_SRCDIR)/configure --prefix=$(PREFIX) && \
 	  make )
 	touch $@
 
-.icu.install: .icu.build
+.icu.installed: .icu.built
 	( cd $(ICU_BUILDDIR) && sudo make install )
 	touch $@
 
@@ -64,29 +64,29 @@ $(ICU_SRCDIR):
 .PHONY: libical update-libical force-update-libical clean-libical
 
 force-update-libical:
-	rm -f .libical.update
+	rm -f .libical.updated
 
-update-libical: force-update-libical .libical.update
+update-libical: force-update-libical .libical.updated
 
-libical: .libical.build
+libical: .libical.built
 
 clean-libical:
 	( cd $(LIBICAL_SRCDIR) && \
 	  git clean -xfd )
-	rm -fr $(LIBICAL_BUILDDIR) .libical.build
+	rm -fr $(LIBICAL_BUILDDIR) .libical.built
 
-.libical.update:
+.libical.updated:
 	git submodule update --remote $(LIBICAL_SRCDIR)
 	touch $@
 
-.libical.build: .libical.update
+.libical.built: .libical.updated
 	( mkdir -p $(LIBICAL_BUILDDIR) && \
 	  cd $(LIBICAL_BUILDDIR) && \
 	  cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) ../$(LIBICAL_SRCDIR) && \
 	  make )
 	touch $@
 
-.libical.install: .libical.build
+.libical.installed: .libical.built
 	( cd $(LIBICAL_BUILDDIR) && \
 	  sudo make install )
 	touch $@
@@ -97,31 +97,31 @@ clean-libical:
 .PHONY: opendkim update-opendkim force-update-opendkim clean-opendkim
 
 force-update-opendkim:
-	rm -f .opendkim.update
+	rm -f .opendkim.updated
 
-update-opendkim: force-update-opendkim .opendkim.update
+update-opendkim: force-update-opendkim .opendkim.updated
 
-opendkim: .opendkim.build
+opendkim: .opendkim.built
 
 clean-opendkim:
 	( cd $(OPENDKIM_SRCDIR) && \
 	  git clean -xfd )
-	rm -fr $(OPENDKIM_BUILDDIR) .opendkim.build
+	rm -fr $(OPENDKIM_BUILDDIR) .opendkim.built
 
-.opendkim.update:
+.opendkim.updated:
 	git submodule update --remote $(OPENDKIM_SRCDIR)
 	( cd $(OPENDKIM_SRCDIR) && \
 	  autoreconf -is )
 	touch $@
 
-.opendkim.build: .opendkim.update
+.opendkim.built: .opendkim.updated
 	( mkdir -p $(OPENDKIM_BUILDDIR) && \
 	  cd $(OPENDKIM_BUILDDIR) && \
 	  ../$(OPENDKIM_SRCDIR)/configure --enable-silent-rules --prefix=$(PREFIX) && \
 	  make )
 	touch $@
 
-.opendkim.install: .opendkim.build
+.opendkim.installed: .opendkim.built
 	( cd $(OPENDKIM_BUILDDIR) && \
 	  sudo make install )
 	touch $@
