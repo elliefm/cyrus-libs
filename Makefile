@@ -3,11 +3,13 @@ PREFIX=/usr/local/cyruslibs-fastmail-v1
 ICU_RELEASE=release-55-1
 ICU_SVN_URL=http://source.icu-project.org/repos/icu/icu/tags/$(ICU_RELEASE)/
 ICU_SRCDIR=icu/$(ICU_RELEASE)/source
+ICU_BUILDDIR=icu-build
 
 LIBICAL_SRCDIR=libical
 LIBICAL_BUILDDIR=libical-build
 
 OPENDKIM_SRCDIR=opendkim
+OPENDKIM_BUILDDIR=opendkim-build
 
 # top level rules
 .PHONY: all update build install clean
@@ -35,8 +37,7 @@ update-icu: force-update-icu .icu.update
 icu: .icu.build
 
 clean-icu:
-	( cd $(ICU_SRCDIR) && make clean )
-	rm -f .icu.build
+	rm -fr $(ICU_BUILDDIR) .icu.build
 
 $(ICU_SRCDIR):
 	mkdir -p icu
@@ -47,13 +48,14 @@ $(ICU_SRCDIR):
 	touch $@
 
 .icu.build: .icu.update
-	( cd $(ICU_SRCDIR) && \
-	  ./configure --prefix=$(PREFIX) && \
+	( mkdir -p $(ICU_BUILDDIR) && \
+	  cd $(ICU_BUILDDIR) && \
+	  ../$(ICU_SRCDIR)/configure --prefix=$(PREFIX) && \
 	  make )
 	touch $@
 
 .icu.install: .icu.build
-	( cd $(ICU_SRCDIR) && sudo make install )
+	( cd $(ICU_BUILDDIR) && sudo make install )
 	touch $@
 
 #
@@ -100,21 +102,22 @@ update-opendkim: force-update-opendkim .opendkim.update
 opendkim: .opendkim.build
 
 clean-opendkim:
-	( cd $(OPENDKIM_SRCDIR) && make clean )
-	rm -f .opendkim.build
+	rm -fr $(OPENDKIM_BUILDDIR) .opendkim.build
 
 .opendkim.update:
 	git submodule update --remote $(OPENDKIM_SRCDIR)
+	( cd $(OPENDKIM_SRCDIR) && \
+	  autoreconf -is )
 	touch $@
 
 .opendkim.build: .opendkim.update
-	( cd $(OPENDKIM_SRCDIR) && \
-	  autoreconf -is && \
-	  ./configure --prefix=$(PREFIX) && \
+	( mkdir -p $(OPENDKIM_BUILDDIR) && \
+	  cd $(OPENDKIM_BUILDDIR) && \
+	  ../$(OPENDKIM_SRCDIR)/configure --enable-silent-rules --prefix=$(PREFIX) && \
 	  make )
 	touch $@
 
 .opendkim.install: .opendkim.build
-	( cd $(OPENDKIM_SRCDIR) && \
+	( cd $(OPENDKIM_BUILDDIR) && \
 	  sudo make install )
 	touch $@

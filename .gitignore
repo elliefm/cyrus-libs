@@ -2,4 +2,6 @@
 .*.update
 .*.install
 icu/
+icu-build/
 libical-build/
+opendkim-build/
