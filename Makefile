@@ -4,14 +4,17 @@ ICU_RELEASE=release-55-1
 ICU_SVN_URL=http://source.icu-project.org/repos/icu/icu/tags/$(ICU_RELEASE)/
 ICU_SRCDIR=icu/$(ICU_RELEASE)/source
 
+LIBICAL_SRCDIR=libical
+LIBICAL_BUILDDIR=libical-build
+
 # top level rules
 .PHONY: all update install
 
-all: .icu.build
+all: .icu.build .libical.build
 
-update: .icu.update
+update: .icu.update .libical.update
 
-install: .icu.install
+install: .icu.install .libical.install
 
 #
 # we get icu from subversion
@@ -41,4 +44,32 @@ $(ICU_SRCDIR):
 
 .icu.install: .icu.build
 	( cd $(ICU_SRCDIR) && sudo make install )
+	touch $@
+
+#
+# we get libical from a git submodule
+#
+.PHONY: libical update-libical force-update-libical
+
+force-update-libical:
+	rm .libical.update
+
+update-libical: force-update-libical .libical.update
+
+libical: .libical.build
+
+.libical.update:
+	git submodule update --remote $(LIBICAL_SRCDIR)
+	touch $@
+
+.libical.build: .libical.update
+	( mkdir -p $(LIBICAL_BUILDDIR) && \
+	  cd $(LIBICAL_BUILDDIR) && \
+	  cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) ../$(LIBICAL_SRCDIR) && \
+	  make )
+	touch $@
+
+.libical.install: .libical.build
+	( cd $(LIBICAL_BUILDDIR) && \
+	  sudo make install )
 	touch $@

@@ -2,3 +2,4 @@
 .*.update
 .*.install
 icu/
+libical-build/
