@@ -18,16 +18,16 @@ all: build
 
 update: update-icu update-libical update-opendkim
 
-build: .icu.built .libical.built .opendkim.built
+build: icu libical opendkim
 
-install: .icu.installed .libical.installed .opendkim.installed
+install: install-icu install-libical install-opendkim
 
 clean: clean-icu clean-libical clean-opendkim
 
 #
 # we get icu from subversion
 #
-.PHONY: icu update-icu force-update-icu clean-icu
+.PHONY: icu update-icu force-update-icu install-icu clean-icu
 
 force-update-icu:
 	rm -f .icu.updated
@@ -35,6 +35,8 @@ force-update-icu:
 update-icu: force-update-icu .icu.updated
 
 icu: .icu.built
+
+install-icu: .icu.installed
 
 clean-icu:
 	rm -fr $(ICU_BUILDDIR) .icu.built
@@ -61,7 +63,7 @@ $(ICU_SRCDIR):
 #
 # we get libical from a git submodule
 #
-.PHONY: libical update-libical force-update-libical clean-libical
+.PHONY: libical update-libical force-update-libical install-libical clean-libical
 
 force-update-libical:
 	rm -f .libical.updated
@@ -69,6 +71,8 @@ force-update-libical:
 update-libical: force-update-libical .libical.updated
 
 libical: .libical.built
+
+install-libical: .libical.installed
 
 clean-libical:
 	( cd $(LIBICAL_SRCDIR) && \
@@ -94,7 +98,7 @@ clean-libical:
 #
 # we get opendkim from a git submodule
 #
-.PHONY: opendkim update-opendkim force-update-opendkim clean-opendkim
+.PHONY: opendkim update-opendkim force-update-opendkim install-opendkim clean-opendkim
 
 force-update-opendkim:
 	rm -f .opendkim.updated
@@ -102,6 +106,8 @@ force-update-opendkim:
 update-opendkim: force-update-opendkim .opendkim.updated
 
 opendkim: .opendkim.built
+
+install-opendkim: .opendkim.installed
 
 clean-opendkim:
 	( cd $(OPENDKIM_SRCDIR) && \
