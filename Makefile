@@ -10,7 +10,7 @@ LIBICAL_BUILDDIR=libical-build
 OPENDKIM_SRCDIR=opendkim
 
 # top level rules
-.PHONY: all update build install
+.PHONY: all update build install clean
 
 all: build
 
@@ -20,10 +20,12 @@ build: .icu.build .libical.build .opendkim.build
 
 install: .icu.install .libical.install .opendkim.install
 
+clean: clean-icu clean-libical clean-opendkim
+
 #
 # we get icu from subversion
 #
-.PHONY: icu update-icu force-update-icu
+.PHONY: icu update-icu force-update-icu clean-icu
 
 force-update-icu:
 	rm .icu.update
@@ -31,6 +33,10 @@ force-update-icu:
 update-icu: force-update-icu .icu.update
 
 icu: .icu.build
+
+clean-icu:
+	( cd $(ICU_SRCDIR) && make clean )
+	rm -f .icu.build
 
 $(ICU_SRCDIR):
 	mkdir -p icu
@@ -53,7 +59,7 @@ $(ICU_SRCDIR):
 #
 # we get libical from a git submodule
 #
-.PHONY: libical update-libical force-update-libical
+.PHONY: libical update-libical force-update-libical clean-libical
 
 force-update-libical:
 	rm .libical.update
@@ -61,6 +67,9 @@ force-update-libical:
 update-libical: force-update-libical .libical.update
 
 libical: .libical.build
+
+clean-libical:
+	rm -fr $(LIBICAL_BUILDDIR) .libical.build
 
 .libical.update:
 	git submodule update --remote $(LIBICAL_SRCDIR)
@@ -81,7 +90,7 @@ libical: .libical.build
 #
 # we get opendkim from a git submodule
 #
-.PHONY: opendkim update-opendkim force-update-opendkim
+.PHONY: opendkim update-opendkim force-update-opendkim clean-opendkim
 
 force-update-opendkim:
 	rm .opendkim.update
@@ -89,6 +98,10 @@ force-update-opendkim:
 update-opendkim: force-update-opendkim .opendkim.update
 
 opendkim: .opendkim.build
+
+clean-opendkim:
+	( cd $(OPENDKIM_SRCDIR) && make clean )
+	rm -f .opendkim.build
 
 .opendkim.update:
 	git submodule update --remote $(OPENDKIM_SRCDIR)
