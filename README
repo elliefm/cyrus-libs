@@ -1,0 +1,34 @@
+Bundle up icu, libical and opendkim libraries for Cyrus.
+
+Based on part of Bron's email to the cyrus-devel list:
+https://lists.andrew.cmu.edu/pipermail/cyrus-devel/2015-September/003483.html
+
+This project uses submodules, so clone it with the --recursive argument.
+
+Usage:
+
+    make all        # do all the compilations
+    make install    # install them to $PREFIX (uses sudo)
+    make clean      # clean up the build directories (doesn't remove sources)
+    make update     # grab newer versions of the sources
+
+(You can also make foo, update-foo, clean-foo and so on to target them one at
+a time.)
+
+icu sources are from release-55-1 from the icu subversion repository (change
+$ICU_RELEASE in the Makefile to have `make update` pull a different version).
+
+libical and opendkim are built from git submodules (master branch in each
+case).
+
+See Makefile for the nitty gritty.
+
+When compiling Cyrus, you'll need PKG_CONFIG_PATH set to contain the installed
+pkgconfig directories (there may be multiple, e.g. architecture/platform
+specific ones).
+
+Try something like this to get a complete list:
+
+    find /usr/local/cyruslibs-fastmail-v1 -type d -name pkgconfig | paste -sd: -
+
+You might also need to set LDFLAGS?
