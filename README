@@ -31,4 +31,9 @@ Try something like this to get a complete list:
 
     find /usr/local/cyruslibs-fastmail-v1 -type d -name pkgconfig | paste -sd: -
 
-You might also need to set LDFLAGS?
+You also need to let ld know about the new lib directories.  You can set
+LDFLAGS as Bron suggests, or add them to your ld config, something like:
+
+    $cat /etc/ld.so.conf.d/cyruslibs-fastmail-v1.conf
+    /usr/local/cyruslibs-fastmail-v1/lib
+    /usr/local/cyruslibs-fastmail-v1/lib/x86_64-linux-gnu
