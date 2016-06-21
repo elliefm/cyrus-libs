@@ -10,11 +10,13 @@ LIBICAL_BUILDDIR=libical-build
 OPENDKIM_SRCDIR=opendkim
 
 # top level rules
-.PHONY: all update install
+.PHONY: all update build install
 
-all: .icu.build .libical.build .opendkim.build
+all: build
 
-update: .icu.update .libical.update .opendkim.update
+update: update-icu update-libical update-opendkim
+
+build: .icu.build .libical.build .opendkim.build
 
 install: .icu.install .libical.install .opendkim.install
 
