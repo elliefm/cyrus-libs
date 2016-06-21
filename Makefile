@@ -34,7 +34,7 @@ $(ICU_SRCDIR):
 	mkdir -p icu
 	(cd icu && svn co $(ICU_SVN_URL))
 
-.icu.update: $(ICU_SRCDIR)
+.icu.update: | $(ICU_SRCDIR)
 	(cd icu/$(ICU_RELEASE) && svn update)
 	touch $@
 
