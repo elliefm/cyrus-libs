@@ -1,3 +1,6 @@
 [submodule "libical"]
 	path = libical
 	url = https://github.com/libical/libical
+[submodule "opendkim"]
+	path = opendkim
+	url = git://git.code.sf.net/p/opendkim/git

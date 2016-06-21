@@ -7,14 +7,16 @@ ICU_SRCDIR=icu/$(ICU_RELEASE)/source
 LIBICAL_SRCDIR=libical
 LIBICAL_BUILDDIR=libical-build
 
+OPENDKIM_SRCDIR=opendkim
+
 # top level rules
 .PHONY: all update install
 
-all: .icu.build .libical.build
+all: .icu.build .libical.build .opendkim.build
 
-update: .icu.update .libical.update
+update: .icu.update .libical.update .opendkim.update
 
-install: .icu.install .libical.install
+install: .icu.install .libical.install .opendkim.install
 
 #
 # we get icu from subversion
@@ -71,5 +73,33 @@ libical: .libical.build
 
 .libical.install: .libical.build
 	( cd $(LIBICAL_BUILDDIR) && \
+	  sudo make install )
+	touch $@
+
+#
+# we get opendkim from a git submodule
+#
+.PHONY: opendkim update-opendkim force-update-opendkim
+
+force-update-opendkim:
+	rm .opendkim.update
+
+update-opendkim: force-update-opendkim .opendkim.update
+
+opendkim: .opendkim.build
+
+.opendkim.update:
+	git submodule update --remote $(OPENDKIM_SRCDIR)
+	touch $@
+
+.opendkim.build: .opendkim.update
+	( cd $(OPENDKIM_SRCDIR) && \
+	  autoreconf -is && \
+	  ./configure --prefix=$(PREFIX) && \
+	  make )
+	touch $@
+
+.opendkim.install: .opendkim.build
+	( cd $(OPENDKIM_SRCDIR) && \
 	  sudo make install )
 	touch $@
