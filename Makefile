@@ -1,15 +1,15 @@
-PREFIX=/usr/local/cyruslibs-fastmail-v1
+PREFIX ?= /usr/local/cyruslibs-fastmail-v1
 
-ICU_RELEASE=release-55-1
-ICU_SVN_URL=http://source.icu-project.org/repos/icu/icu/tags/$(ICU_RELEASE)/
-ICU_SRCDIR=icu/$(ICU_RELEASE)/source
-ICU_BUILDDIR=icu-build
+ICU_RELEASE := release-55-1
+ICU_SVN_URL := http://source.icu-project.org/repos/icu/icu/tags/$(ICU_RELEASE)/
+ICU_SRCDIR := icu/$(ICU_RELEASE)/source
+ICU_BUILDDIR := icu-build
 
-LIBICAL_SRCDIR=libical
-LIBICAL_BUILDDIR=libical-build
+LIBICAL_SRCDIR := libical
+LIBICAL_BUILDDIR := libical-build
 
-OPENDKIM_SRCDIR=opendkim
-OPENDKIM_BUILDDIR=opendkim-build
+OPENDKIM_SRCDIR := opendkim
+OPENDKIM_BUILDDIR := opendkim-build
 
 # top level rules
 .PHONY: all update build install clean
