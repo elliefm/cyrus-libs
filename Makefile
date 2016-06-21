@@ -30,7 +30,7 @@ clean: clean-icu clean-libical clean-opendkim
 .PHONY: icu update-icu force-update-icu clean-icu
 
 force-update-icu:
-	rm .icu.update
+	rm -f .icu.update
 
 update-icu: force-update-icu .icu.update
 
@@ -64,7 +64,7 @@ $(ICU_SRCDIR):
 .PHONY: libical update-libical force-update-libical clean-libical
 
 force-update-libical:
-	rm .libical.update
+	rm -f .libical.update
 
 update-libical: force-update-libical .libical.update
 
@@ -95,7 +95,7 @@ clean-libical:
 .PHONY: opendkim update-opendkim force-update-opendkim clean-opendkim
 
 force-update-opendkim:
-	rm .opendkim.update
+	rm -f .opendkim.update
 
 update-opendkim: force-update-opendkim .opendkim.update
 
